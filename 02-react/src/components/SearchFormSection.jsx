@@ -1,15 +1,14 @@
 import { useId, useState } from "react"
 
-export function SearchFormSection({ onSearch, onTextFilter }) {
-    const idSearch = useId()
-    const idTechnology = useId()
-    const idLocation = useId()
-    const idExperienceLevel = useId()
+const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter }) => {
+    const [searchText, setSearchText] = useState("")
 
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        const formData = new FormData(event.target)
+        // event.target is the element that received the event (input)
+        // evnet.currentTarget is the element that listen to the event (form)
+        const formData = new FormData(event.currentTarget)
 
         const filters = {
             technology: formData.get(idTechnology),
@@ -23,15 +22,42 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
     const handleTextSearch = (event) => {
         const text = event.target.value
 
+        setSearchText(text)
         onTextFilter(text)
     }
+
+    return {
+        searchText,
+        handleSubmit,
+        handleTextSearch
+    }
+
+}
+
+export function SearchFormSection({ onSearch, onTextFilter }) {
+    const idSearch = useId()
+    const idTechnology = useId()
+    const idLocation = useId()
+    const idExperienceLevel = useId()
+
+    const {
+        handleSubmit,
+        handleTextSearch,
+    } = useSearchForm({
+        idTechnology,
+        idLocation,
+        idExperienceLevel,
+        onSearch,
+        onTextFilter
+    })
+
 
     return (
         <section className="jobs-search">
             <h1>Encuentra tu próximo trabajo</h1>
             <p>Explora miles de oportunidades en el sector tecnológico.</p>
 
-            <form onSubmit={handleSubmit} id="empleos-search-form" role="search">
+            <form onChange={handleSubmit} id="empleos-search-form" role="search">
                 <div className="search-bar">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"
@@ -48,8 +74,6 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
                         placeholder="Buscar trabajos, empresas o habilidades"
                         onChange={handleTextSearch}
                     />
-
-                    <button type="submit" style={{ position: 'absolute', right: '4px' }}  >Buscar</button>
                 </div>
 
                 <div className="search-filters">
