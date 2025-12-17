@@ -1,9 +1,8 @@
-import { useId, useState } from "react"
-
-let timeoutId = null
+import { useId, useState, useRef } from "react"
 
 const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter }) => {
     const [searchText, setSearchText] = useState("")
+    const timeoutId = useRef(null)
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -32,11 +31,11 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, on
         setSearchText(text)
 
         // Debounce: evita que se ejecute la función cada vez que se escribe
-        if (timeoutId) {
-            clearTimeout(timeoutId)
+        if (timeoutId.current) {
+            clearTimeout(timeoutId.current)
         }
 
-        timeoutId = setTimeout(() => {
+        timeoutId.current = setTimeout(() => {
             onTextFilter(text)
         }, 500)
     }
@@ -49,7 +48,7 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, on
 
 }
 
-export function SearchFormSection({ onSearch, onTextFilter }) {
+export function SearchFormSection({ initialText, onSearch, onTextFilter }) {
     const idText = useId()
     const idTechnology = useId()
     const idLocation = useId()
@@ -88,6 +87,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
                         type="text"
                         placeholder="Buscar trabajos, empresas o habilidades"
                         onChange={handleTextSearch}
+                        defaultValue={initialText}
                     />
                 </div>
 
