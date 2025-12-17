@@ -1,6 +1,8 @@
 import { useId, useState } from "react"
 
-const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, onTextFilter }) => {
+let timeoutId = null
+
+const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, idText, onSearch, onTextFilter }) => {
     const [searchText, setSearchText] = useState("")
 
     const handleSubmit = (event) => {
@@ -9,6 +11,11 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, 
         // event.target is the element that received the event (input)
         // evnet.currentTarget is the element that listen to the event (form)
         const formData = new FormData(event.currentTarget)
+
+        // Since the text input if debounced, we don't want to trigger the search
+        if (event.target.name === idText) {
+            return
+        }
 
         const filters = {
             technology: formData.get(idTechnology),
@@ -23,7 +30,15 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, 
         const text = event.target.value
 
         setSearchText(text)
-        onTextFilter(text)
+
+        // Debounce: evita que se ejecute la función cada vez que se escribe
+        if (timeoutId) {
+            clearTimeout(timeoutId)
+        }
+
+        timeoutId = setTimeout(() => {
+            onTextFilter(text)
+        }, 500)
     }
 
     return {
@@ -35,7 +50,7 @@ const useSearchForm = ({ idTechnology, idLocation, idExperienceLevel, onSearch, 
 }
 
 export function SearchFormSection({ onSearch, onTextFilter }) {
-    const idSearch = useId()
+    const idText = useId()
     const idTechnology = useId()
     const idLocation = useId()
     const idExperienceLevel = useId()
@@ -47,10 +62,10 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
         idTechnology,
         idLocation,
         idExperienceLevel,
+        idText,
         onSearch,
         onTextFilter
     })
-
 
     return (
         <section className="jobs-search">
@@ -69,7 +84,7 @@ export function SearchFormSection({ onSearch, onTextFilter }) {
 
                     <input
                         id="empleos-search-input"
-                        name={idSearch}
+                        name={idText}
                         type="text"
                         placeholder="Buscar trabajos, empresas o habilidades"
                         onChange={handleTextSearch}
