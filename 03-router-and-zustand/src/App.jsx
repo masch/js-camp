@@ -6,6 +6,7 @@ import { Footer } from './components/Footer.jsx'
 import { SearchPage } from './pages/Search.jsx'
 import { HomePage } from './pages/Home.jsx'
 import { NotFoundPage } from './pages/404.jsx'
+import { JobDetail } from './pages/Detail.jsx'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/jobs/:id" element={<JobDetail />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
 
