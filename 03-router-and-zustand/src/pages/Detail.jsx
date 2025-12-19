@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 import snarkdown from 'snarkdown'
-import styles from './detail.module.css'
+import styles from './Detail.module.css'
 
 const JobSection = ({ title, content }) => {
     const html = snarkdown(content ?? '')
@@ -32,7 +32,7 @@ export const JobDetail = () => {
         setLoading(true)
         setError(null)
 
-        fetch(`https://tu-api.dev/api/jobs/${jobId}`, {
+        fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`, {
             signal: controller.signal,
         })
             .then((response) => {
@@ -42,7 +42,17 @@ export const JobDetail = () => {
                 return response.json()
             })
             .then((data) => {
-                setJob(data)
+                const job = {
+                    id: data.id,
+                    title: data.titulo,
+                    company: data.empresa,
+                    location: data.ubicacion,
+                    content: data.content?.description || '',
+                    responsibilities: data.content?.responsibilities || '',
+                    requirements: data.content?.requirements || '',
+                    about: data.content?.about || '',
+                }
+                setJob(job)
             })
             .catch((error) => {
                 if (error.name === 'AbortError') return
