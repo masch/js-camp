@@ -112,7 +112,7 @@ const useFilters = () => {
 
 }
 
-export function SearchPage() {
+export default function SearchPage() {
     const {
         loading,
         error,

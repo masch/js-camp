@@ -19,7 +19,7 @@ const JobSection = ({ title, content }) => {
     )
 }
 
-export const JobDetail = () => {
+export default function JobDetail() {
     const { jobId } = useParams()
     const navigate = useNavigate()
 
