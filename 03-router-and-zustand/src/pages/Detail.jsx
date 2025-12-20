@@ -32,12 +32,11 @@ export const JobDetail = () => {
         setLoading(true)
         setError(null)
 
-        fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`, {
-            signal: controller.signal,
-        })
+        fetch(`https://jscamp-api.vercel.app/api/jobs/${jobId}`)
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error('Job not found')
+                    navigate('/not-found')
+                    return
                 }
                 return response.json()
             })
@@ -55,7 +54,6 @@ export const JobDetail = () => {
                 setJob(job)
             })
             .catch((error) => {
-                if (error.name === 'AbortError') return
                 setError(error.message)
                 setJob(null)
             })
