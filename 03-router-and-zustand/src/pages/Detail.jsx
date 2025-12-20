@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
+
+import { Link } from '../components/Link'
+
 import snarkdown from 'snarkdown'
 import styles from './Detail.module.css'
 
@@ -87,31 +90,36 @@ export const JobDetail = () => {
     }
 
     return (
-        <div className={styles.container}>
-            <nav className={styles.breadcrumb}>
-                <a href="/jobs" className={styles.breadcrumbLink}>
-                    Empleos
-                </a>
-                <span className={styles.breadcrumbSeparator}>/</span>
-                <span className={styles.breadcrumbTitle}>{job.title}</span>
-            </nav>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
+            <div className={styles.container}>
+                <nav className={styles.breadcrumb}>
+                    <Link
+                        href="/search"
+                        className={styles.breadcrumbButton}
+                    >
+                        Empleos
+                    </Link>
+                    <span className={styles.breadcrumbSeparator}>/</span>
+                    <span className={styles.breadcrumbTitle}>{job.title}</span>
+                </nav>
 
-            <header className={styles.header}>
-                <h1 className={styles.title}>{job.title}</h1>
-                <div className={styles.meta}>
-                    <p className={styles.company}>{job.company}</p>
-                    <p className={styles.location}>{job.location}</p>
-                </div>
-                <button className={styles.applyButton}>Aplicar a esta oferta</button>
-            </header>
+                <header className={styles.header}>
+                    <h1 className={styles.title}>{job.title}</h1>
+                    <div className={styles.meta}>
+                        <p className={styles.company}>{job.company}</p>
+                        <p className={styles.location}>{job.location}</p>
+                    </div>
+                    <button className={styles.applyButton}>Aplicar a esta oferta</button>
+                </header>
 
-            <JobSection title="Descripción del puesto" content={job.content} />
+                <JobSection title="Descripción del puesto" content={job.content} />
 
-            <JobSection title="Responsabilidades" content={job.responsibilities} />
+                <JobSection title="Responsabilidades" content={job.responsibilities} />
 
-            <JobSection title="Requisitos" content={job.requirements} />
+                <JobSection title="Requisitos" content={job.requirements} />
 
-            <JobSection title="Acerca de la empresa" content={job.about} />
+                <JobSection title="Acerca de la empresa" content={job.about} />
+            </div>
         </div>
     )
 }

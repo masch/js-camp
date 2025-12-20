@@ -19,9 +19,7 @@ const useFilters = () => {
         }
     })
 
-    const [textToFilter, setTextToFilter] = useState(() => {
-        return searchParams.get('text') || ''
-    })
+    const [textToFilter, setTextToFilter] = useState(() => searchParams.get('text') || '')
 
     const [currentPage, setCurrentPage] = useState(() => {
         const page = Number(searchParams.get('page'))
