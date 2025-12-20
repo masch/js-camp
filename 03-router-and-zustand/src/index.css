@@ -534,3 +534,8 @@ article {
   font-size: 0.875em;
   font-family: 'Courier New', monospace;
 }
+
+.nav-link-active {
+  color: yellow;
+  pointer-events: none;
+}
