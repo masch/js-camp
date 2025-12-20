@@ -19,7 +19,45 @@ const JobSection = ({ title, content }) => {
     )
 }
 
-export default function JobDetail() {
+function DetailPageBreadCumb({ job }) {
+    return (
+        <nav className={styles.breadcrumb}>
+            <Link
+                href="/search"
+                className={styles.breadcrumbButton}
+            >
+                Empleos
+            </Link>
+            <span className={styles.breadcrumbSeparator}>/</span>
+            <span className={styles.breadcrumbTitle}>{job.title}</span>
+        </nav>
+    )
+}
+
+function DetailPageHeader({ job, isLoggedIn }) {
+    return (
+        <>
+            <header className={styles.header}>
+                <h1 className={styles.title}>{job.title}</h1>
+                <p className={styles.meta}>
+                    {job.company} . {job.location}
+                </p>
+            </header>
+
+            <DetailApplyButton isLoggedIn={isLoggedIn} />
+        </>
+    )
+}
+
+function DetailApplyButton({ isLoggedIn }) {
+    return (
+        <button disabled={!isLoggedIn} className={styles.applyButton}>
+            {isLoggedIn ? 'Aplicar ahora' : 'Inicia sesión para aplicar'}
+        </button>
+    )
+}
+
+export default function JobDetail({ isLoggedIn }) {
     const { jobId } = useParams()
     const navigate = useNavigate()
 
@@ -29,8 +67,6 @@ export default function JobDetail() {
 
     useEffect(() => {
         if (!jobId) return
-
-        const controller = new AbortController()
 
         setLoading(true)
         setError(null)
@@ -63,10 +99,6 @@ export default function JobDetail() {
             .finally(() => {
                 setLoading(false)
             })
-
-        return () => {
-            controller.abort()
-        }
     }, [jobId])
 
     if (loading) {
@@ -92,32 +124,12 @@ export default function JobDetail() {
     return (
         <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 1rem' }}>
             <div className={styles.container}>
-                <nav className={styles.breadcrumb}>
-                    <Link
-                        href="/search"
-                        className={styles.breadcrumbButton}
-                    >
-                        Empleos
-                    </Link>
-                    <span className={styles.breadcrumbSeparator}>/</span>
-                    <span className={styles.breadcrumbTitle}>{job.title}</span>
-                </nav>
-
-                <header className={styles.header}>
-                    <h1 className={styles.title}>{job.title}</h1>
-                    <div className={styles.meta}>
-                        <p className={styles.company}>{job.company}</p>
-                        <p className={styles.location}>{job.location}</p>
-                    </div>
-                    <button className={styles.applyButton}>Aplicar a esta oferta</button>
-                </header>
+                <DetailPageBreadCumb job={job} />
+                <DetailPageHeader job={job} isLoggedIn={isLoggedIn} />
 
                 <JobSection title="Descripción del puesto" content={job.content} />
-
                 <JobSection title="Responsabilidades" content={job.responsibilities} />
-
                 <JobSection title="Requisitos" content={job.requirements} />
-
                 <JobSection title="Acerca de la empresa" content={job.about} />
             </div>
         </div>
