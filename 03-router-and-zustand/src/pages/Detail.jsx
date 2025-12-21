@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router'
 
 import { Link } from '../components/Link'
-import { useAuth } from '../context/AuthContext'
+import { useAuthStore } from '../store/authStore'
+import { useFavoriteStore } from '../store/favoriteStore'
 
 import snarkdown from 'snarkdown'
 import styles from './Detail.module.css'
@@ -46,15 +47,26 @@ function DetailPageHeader({ job }) {
             </header>
 
             <DetailApplyButton />
+            <DetailFavoriteButton jobId={job.id} />
         </>
     )
 }
 
 function DetailApplyButton() {
-    const { isLoggedIn } = useAuth()
+    const { isLoggedIn } = useAuthStore()
     return (
         <button disabled={!isLoggedIn} className={styles.applyButton}>
             {isLoggedIn ? 'Aplicar ahora' : 'Inicia sesión para aplicar'}
+        </button>
+    )
+}
+
+function DetailFavoriteButton({ jobId }) {
+    const { toggleFavorite, isFavorite } = useFavoriteStore()
+
+    return (
+        <button onClick={() => toggleFavorite(jobId)}>
+            {isFavorite(jobId) ? '❤️' : '❤'}
         </button>
     )
 }
