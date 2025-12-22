@@ -3,7 +3,6 @@ import { useAuthStore } from "../store/authStore"
 import { Link } from "./Link.jsx"
 import { useFavoriteStore } from "../store/favoriteStore"
 
-
 export function Header() {
     const { isLoggedIn } = useAuthStore()
     const { counterFavorites } = useFavoriteStore()
@@ -40,7 +39,7 @@ export function Header() {
                     isLoggedIn && (
                         <NavLink
                             className={({ isActive }) => isActive ? 'nav-link-active' : ''}
-                            to="/profiles"
+                            to="/profile"
                         >
                             Profile ❤️ {numberOfFavorites}
                         </NavLink>
@@ -54,11 +53,17 @@ export function Header() {
 
 const HeaderUserButton = () => {
     const { isLoggedIn, login, logout } = useAuthStore()
+    const { clearFavorites } = useFavoriteStore()
+
+    const handleLogout = () => {
+        logout()
+        clearFavorites()
+    }
 
     return (
         <div>
             {isLoggedIn ?
-                <button onClick={logout}>Cerrar sesión</button>
+                <button onClick={handleLogout}>Cerrar sesión</button>
                 :
                 <button onClick={login}>Iniciar sesión</button>
             }
