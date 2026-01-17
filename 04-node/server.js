@@ -13,19 +13,24 @@ function sendJson(res, statusCode, data) {
 
 const server = createServer((req, res) => {
     console.log('Request received', req.method, req.url)
+    const { method, url } = req
 
-    if (req.url === '/') {
+    if (method != 'GET') {
+        return sendJson(res, 405, { error: "Method not allowed" })
+    }
+
+    if (url === '/') {
         return sendJson(res, 200, "Hello from Node.js 😁")
     }
 
-    if (req.url === '/users') {
+    if (url === '/users') {
         return sendJson(res, 200, [
             { id: 1, name: 'John Doe' },
             { id: 2, name: 'Jane Doe' },
         ])
     }
 
-    if (req.url == '/health') {
+    if (url == '/health') {
         return sendJson(res, 200, { status: 'ok', uptime: process.uptime() })
     }
 
