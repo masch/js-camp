@@ -1,11 +1,17 @@
 info:
-  name: Health
+  name: Create user
   type: http
-  seq: 1
+  seq: 2
 
 http:
   method: POST
-  url: http://localhost:3000
+  url: http://localhost:3000/users
+  body:
+    type: json
+    data: |-
+      {
+        "name": "myself"
+      }
   auth: inherit
 
 settings:

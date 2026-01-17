@@ -1,9 +1,15 @@
 import { createServer } from "node:http";
-import { uptime } from "node:process";
+import { randomUUID } from "node:crypto";
+import { json } from "node:stream/consumers";
 
 process.loadEnvFile()
 
 const port = process.env.PORT ?? 0
+
+const users = [
+    { id: 1, name: 'John Doe' },
+    { id: 2, name: 'Jane Doe' },
+]
 
 function sendJson(res, statusCode, data) {
     res.statusCode = statusCode
@@ -11,28 +17,42 @@ function sendJson(res, statusCode, data) {
     return res.end(JSON.stringify(data))
 }
 
-const server = createServer((req, res) => {
+const server = createServer(async (req, res) => {
     console.log('Request received', req.method, req.url)
     const { method, url } = req
 
-    if (method != 'GET') {
-        return sendJson(res, 405, { error: "Method not allowed" })
+    if (method === 'GET') {
+        if (url === '/users') {
+            return sendJson(res, 200, users)
+        }
+
+        if (url == '/health') {
+            return sendJson(res, 200, { status: 'ok', uptime: process.uptime() })
+        }
+    }
+
+    if (method === 'POST') {
+        if (url === '/users') {
+            const body = await json(req)
+
+            if (!body || !body.name) {
+                return sendJson(res, 400, { error: 'Missing name' })
+            }
+
+            const newUser = {
+                id: randomUUID(),
+                name: body.name,
+            }
+
+            users.push(newUser)
+            return sendJson(res, 201, newUser)
+        }
     }
 
     if (url === '/') {
         return sendJson(res, 200, "Hello from Node.js 😁")
     }
 
-    if (url === '/users') {
-        return sendJson(res, 200, [
-            { id: 1, name: 'John Doe' },
-            { id: 2, name: 'Jane Doe' },
-        ])
-    }
-
-    if (url == '/health') {
-        return sendJson(res, 200, { status: 'ok', uptime: process.uptime() })
-    }
 
     return sendJson(res, 404, { error: "Not found" })
 })
