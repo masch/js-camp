@@ -20,19 +20,26 @@ function sendJson(res, statusCode, data) {
 const server = createServer(async (req, res) => {
     console.log('Request received', req.method, req.url)
     const { method, url } = req
+    const [pathname, querystring] = url.split('?')
+    const searchParams = new URLSearchParams(querystring)
 
     if (method === 'GET') {
-        if (url === '/users') {
-            return sendJson(res, 200, users)
+        if (pathname === '/users') {
+            const limit = Number(searchParams.get('limit')) || users.length
+            const offset = Number(searchParams.get('offset')) || 0
+
+            const paginatedUsers = users.slice(offset, offset + limit)
+
+            return sendJson(res, 200, paginatedUsers)
         }
 
-        if (url == '/health') {
+        if (pathname === '/health') {
             return sendJson(res, 200, { status: 'ok', uptime: process.uptime() })
         }
     }
 
     if (method === 'POST') {
-        if (url === '/users') {
+        if (pathname === '/users') {
             const body = await json(req)
 
             if (!body || !body.name) {
@@ -49,7 +56,7 @@ const server = createServer(async (req, res) => {
         }
     }
 
-    if (url === '/') {
+    if (pathname === '/') {
         return sendJson(res, 200, "Hello from Node.js 😁")
     }
 
