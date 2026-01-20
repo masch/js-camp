@@ -1,0 +1,22 @@
+info:
+  name: Get Jobs
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://localhost:3000/jobs?offset=0&limit=4
+  params:
+    - name: offset
+      value: "0"
+      type: query
+    - name: limit
+      value: "4"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

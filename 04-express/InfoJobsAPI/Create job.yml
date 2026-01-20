@@ -1,0 +1,36 @@
+info:
+  name: Create job
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:3000/jobs
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Desarrollador de Software Senior",
+        "company": "Tech Solutions Inc.",
+        "location": "Remoto",
+        "description": "Buscamos un ingeniero de software con experiencia en desarrollo web y conocimientos en JavaScript, React y Node.js. El candidato ideal debe ser capaz de trabajar en equipo y tener buenas habilidades de comunicación.",
+        "data": {
+          "technology": [
+            "react",
+            "node",
+            "javascript"
+          ],
+          "modalidad": "remoto",
+          "level": "senior"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
