@@ -1,9 +1,36 @@
 import express from "express";
+import cors from "cors";
 import jobs from "./jobs.json" with { type: "json" }; // In order to read JSON files on ESM
 import { DEFAULTS } from "./config.js";
 
 const PORT = process.env.PORT || DEFAULTS.PORT;
 const app = express();
+
+const ACCEPTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://jobs.com",
+];
+
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (ACCEPTED_ORIGINS.includes(origin)) {
+            callback(null, true);
+        }
+
+        return callback(new Error("Not allowed by CORS"));
+    }
+}));
+
+app.use(express.json());
+
+
+app.use((req, res, next) => {
+    const timeString = new Date().toLocaleDateString();
+    console.log(`[${timeString}] ${req.method} ${req.url}`);
+
+    next();
+})
 
 app.get("/", (req, res) => {
     return res.json({
@@ -11,28 +38,28 @@ app.get("/", (req, res) => {
     });
 });
 
-app.get("/get-jobs", (req, res) => {
-    const { text, level, limit = DEFAULTS.LIMIT_PAGINATION, technology, offset = DEFAULTS.LIMIT_OFFSET } = req.query;
+app.get("/jobs", (req, res) => {
+    const { text, title, level, limit = DEFAULTS.LIMIT_PAGINATION, technology, offset = DEFAULTS.LIMIT_OFFSET } = req.query;
 
     let filteredJobs = [...jobs];
 
     if (text) {
         const searchTerm = text.toLowerCase();
         filteredJobs = filteredJobs.filter((job) =>
-            job.title.toLowerCase().includes(searchTerm)
-            || job.description.toLowerCase().includes(searchTerm)
+            job.titulo.toLowerCase().includes(searchTerm)
+            || job.descripcion.toLowerCase().includes(searchTerm)
         );
     }
 
     if (technology) {
         filteredJobs = filteredJobs.filter((job) =>
-            job.data.technology.includes(technology)
+            job.data.tecnologia.includes(technology)
         );
     }
 
     if (level) {
         filteredJobs = filteredJobs.filter((job) =>
-            job.data.level.includes(level)
+            job.data.nivel.includes(level)
         );
     }
 
@@ -44,11 +71,49 @@ app.get("/get-jobs", (req, res) => {
         offsetNumber + limitNumber);
 
     return res.json({
-        jobs: paginatedJobs
+        data: paginatedJobs,
+        total: filteredJobs.length,
+        limit: limitNumber,
+        offset: offsetNumber,
     });
 });
 
-app.get("/get-job/:id", (req, res) => {
+app.get("/jobs/:id", (req, res) => {
+    const { id } = req.params;
+
+    const job = jobs.find((job) => job.id === id);
+
+    if (!job) {
+        return res.status(404).json({
+            message: "Job not found",
+        });
+    }
+
+    return res.json(job);
+});
+
+app.post("/jobs", (req, res) => {
+    const { titulo, empresa, ubicacion, data } = req.body;
+
+    const newJob = {
+        id: crypto.randomUUID(),
+        titulo,
+        empresa,
+        ubicacion,
+        data,
+    };
+
+    jobs.push(newJob);
+
+    return res.status(201).json(newJob);
+});
+
+app.delete("/jobs/:id", (req, res) => {
+    // TODO: Implement delete job
+});
+
+
+app.put("/jobs/:id", (req, res) => {
     const { id } = req.params;
 
     const idNumber = Number(id);
