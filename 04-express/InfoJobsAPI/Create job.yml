@@ -5,10 +5,12 @@ info:
 
 http:
   method: POST
-  url: http://localhost:3000/jobs
+  url: "{{DOMAIN}}/jobs"
   headers:
     - name: Content-Type
       value: application/json
+    - name: Origin
+      value: http://localhost:5173
   body:
     type: json
     data: |-

@@ -2,8 +2,22 @@ opencollection: 1.0.0
 
 info:
   name: InfoJobsAPI
+config:
+  proxy:
+    inherit: true
+    config:
+      protocol: http
+      hostname: ""
+      port: ""
+      auth:
+        username: ""
+        password: ""
+      bypassProxy: ""
 
-request: {}
+request:
+  variables:
+    - name: API
+      value: ""
 bundled: false
 extensions:
   ignore:

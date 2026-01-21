@@ -5,7 +5,10 @@ info:
 
 http:
   method: GET
-  url: http://localhost:3000/jobs/0a892e84-0acd-45dd-99b3-d30d1fa428b9
+  url: "{{DOMAIN}}/jobs/7a4d1d8b-1e45-4d8c-9f1a-8c2f9a9121a4"
+  headers:
+    - name: Origin
+      value: http://localhost:5173
   auth: inherit
 
 settings:
