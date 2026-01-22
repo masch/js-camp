@@ -14,7 +14,7 @@ app.use(express.json());
 
 app.use("/jobs", jobsRouter);
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV) {
     app.listen(PORT, () => {
         console.log(`Server started on port http://localhost:${PORT}`);
     });
