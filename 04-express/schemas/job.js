@@ -22,4 +22,12 @@ const jobSchema = z.object({
         requirements: z.string(),
         about: z.string(),
     })
-})  
+})
+
+export function validateJob(input) {
+    return jobSchema.safeParse(input)
+}
+
+export function validatePartialJob(input) {
+    return jobSchema.partial().safeParse(input)
+}
