@@ -33,7 +33,7 @@ export default function HomePage() {
                         </svg>
                         <input
                             name="search"
-                            type="text"
+                            type="search"
                             placeholder="Buscar empleos por título, habilidad o empresa"
                         />
 

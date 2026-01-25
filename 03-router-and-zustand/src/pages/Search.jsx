@@ -49,7 +49,7 @@ const useFilters = () => {
 
                 const queryParams = params.toString()
 
-                const response = await fetch(`http://localhost:3000/jobs?${queryParams}`)
+                const response = await fetch(`https://04-express-six.vercel.app/jobs?${queryParams}`)
                 const json = await response.json()
                 setJobs(json.data)
                 setTotal(json.total)
