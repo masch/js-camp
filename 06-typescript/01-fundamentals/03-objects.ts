@@ -25,3 +25,13 @@ const intersectionEntity: UserEntity = {
     },
     role: "admin"
 }
+
+type Dictionary = {
+    [key: string]: string
+}
+
+const dictionary: Dictionary = {
+    a: "1",
+    b: "2",
+    c: "3"
+}
