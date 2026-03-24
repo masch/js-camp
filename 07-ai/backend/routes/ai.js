@@ -1,10 +1,26 @@
 process.loadEnvFile()
 
 import { Router } from "express";
+import { rateLimit } from "express-rate-limit";
+
 import OpenAI from "openai";
+
 import { JobModel } from "../models/job.js";
+import { CONFIG } from "../config.js";
+
+
+// TODO: Implement rate-limite-redis
+
+const aiRateLimit = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    limit: 5,
+    message: { error: "Too many requests from this IP, please try again after" },
+    legacyHeaders: false,
+    standardHeaders: 'draft-8',
+});
 
 export const aiRouter = Router();
+aiRouter.use(aiRateLimit);
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
@@ -33,7 +49,7 @@ aiRouter.get('/summary/:id', async (req, res) => {
 
     try {
         const completion = await openai.chat.completions.create({
-            model: config.MODEL_AI,
+            model: CONFIG.MODEL_AI,
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: prompt }
