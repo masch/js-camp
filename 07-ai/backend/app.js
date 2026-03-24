@@ -1,6 +1,7 @@
 import express from "express";
 import { corsMiddleware } from "./middlewares/cors.js";
 import { jobsRouter } from "./routes/jobs.js";
+import { aiRouter } from "./routes/ai.js";
 import { DEFAULTS } from "./config.js";
 import { systemRouter } from "./routes/system.js";
 
@@ -13,6 +14,9 @@ app.use(corsMiddleware());
 app.use(express.json());
 
 app.use("/jobs", jobsRouter);
+app.use("/ai", aiRouter);
+
+console.log(process.env.NODE_ENV);
 
 if (process.env.NODE_ENV) {
     app.listen(PORT, () => {
